@@ -1,0 +1,25 @@
+<!-- base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <style>
+        body {
+            background-color: {% block bgColor %}white{% endblock %};
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <!-- 导航栏内容 -->
+    </nav>
+
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <!-- 底部内容 -->
+    </footer>
+</body>
+</html>
