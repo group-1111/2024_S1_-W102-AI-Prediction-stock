@@ -5,7 +5,8 @@ import pandas as pd
 import plotly.graph_objs as go
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
-import numpy as np
+from django.http import JsonResponse
+
 
 
 
@@ -54,3 +55,27 @@ def stock_chart(request, symbol):
     return render(request, 'API.html', {'chart_div': chart_div})
 
 
+
+def get_stock_info(request):
+    if request.method == 'GET':
+        stock_code = request.GET.get('stock_code')
+        date = request.GET.get('date')
+        
+        print(f"Stock code: {stock_code}, Date: {date}")
+
+        stock_data = get_data(stock_code, start_date=date, end_date=date)
+
+        print("Stock data:", stock_data)
+
+        if not stock_data.empty:
+            stock_info = {
+                'open': stock_data['open'].values[0],
+                'high': stock_data['high'].values[0],
+                'low': stock_data['low'].values[0],
+                'close': stock_data['close'].values[0],
+                'volume': stock_data['volume'].values[0],
+            }
+            return JsonResponse(stock_info)
+        else:
+            return JsonResponse({'error': 'No data available for the selected stock and date.'}, status=404)
+        

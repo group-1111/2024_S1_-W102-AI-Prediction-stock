@@ -131,7 +131,27 @@
         #stockForm {
             text-align: center;
         }
-    
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* 右侧浮动 */
+        #addNoteButton {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
         </style>
         <link href="{% static 'css/sidebars.css' %}" rel="stylesheet">
 
@@ -172,8 +192,24 @@
         
       </div>
 
+
+    
+      <div id="noteInputArea" style="display: none;">
+        <input type="text" id="noteInput" placeholder="add note">
+        <button onclick="addNote()">add</button>
+    </div>
+
+    <ul id="noteList"></ul>
+
+    <!-- add note button -->
+    <button id="addNoteButton" onclick="showInput()">Add Note</button>
+
     <div class="container">
         <h1>Stock Info</h1>
+
+      
+    
+
         <div id="stockInfo"></div>
         <canvas id="stockChart" width="400" height="200"></canvas>
     </div>
@@ -223,7 +259,107 @@
             var line = svg.querySelector('.js-line');
             line.style.stroke = color;
         }
+
+      
+  
+ // note
+
+ function showInput() {
+            var noteInputArea = document.getElementById("noteInputArea");
+            noteInputArea.style.display = "block";
+        }
+
+        function addNote() {
+            var noteInput = document.getElementById("noteInput");
+            var noteText = noteInput.value.trim();
+
+            if (noteText !== "") {
+                var noteList = document.getElementById("noteList");
+                var li = document.createElement("li");
+                li.textContent = noteText;
+
+                var editButton = document.createElement("button");
+                editButton.textContent = "edit";
+                editButton.onclick = function() {
+                    editNoteText(li);
+                };
+
+                var deleteButton = document.createElement("button");
+                deleteButton.textContent = "delete";
+                deleteButton.onclick = function() {
+                    li.remove();
+                };
+
+                // add edit and delete button
+                li.appendChild(editButton);
+                li.appendChild(deleteButton);
+                noteList.appendChild(li);
+
+                noteInput.value = "";
+            }
+        }
+
+        function editNoteText(noteElement) {
+            var newText = prompt("edit note", noteElement.textContent);
+            if (newText !== null) {
+                noteElement.textContent = newText;
+
+                var editButton = document.createElement("button");
+                editButton.textContent = "edit";
+                editButton.onclick = function() {
+                    editNoteText(noteElement);
+                };
+
+                noteElement.appendChild(editButton);
+                noteElement.appendChild(deleteButton);
+            }
+        }
+
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "delete";
+        deleteButton.onclick = function() {
+            this.parentElement.remove();
+        };
   </script>
+
+<script>
+  function getStockInfo() {
+    var stockCode = document.getElementById("stock_code").value;
+    var date = document.getElementById("date").value;
+
+    console.log("Stock code:", stockCode);
+    console.log("Date:", date);
+
+    fetch('/get-stock-info/?stock_code=' + stockCode + '&date=' + date)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log("Received data:", data);
+        var stockInfoResult = document.getElementById("stockInfoResult");
+        stockInfoResult.innerHTML = "";
+
+        if (data.error) {
+            stockInfoResult.textContent = data.error;
+        } else {
+            for (var key in data) {
+                var p = document.createElement("p");
+                p.textContent = `${key}: ${data[key]}`;
+                stockInfoResult.appendChild(p);
+            }
+        }
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+}
+  
+</script>
+
+
 
 
 </body>

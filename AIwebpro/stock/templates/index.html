@@ -149,6 +149,12 @@
             height: 100%;
             border: none;
         }
+
+        #bgColorForm {
+            position: fixed;
+            top: 10px; 
+            right: 10px; 
+      }
     </style>
 
     <link href="{% static 'css/sidebars.css' %}" rel="stylesheet">
@@ -188,7 +194,10 @@
   </div>
   
   <h1>Welcome to Prediction Picture Page</h1>
-
+  <form action="" method="get" id="bgColorForm">
+    <label for="bgColor">Background Color:</label>
+    <input type="color" id="bgColor" name="bgColor" onchange="changeBackgroundColor()">
+</form>
 
 
   <div class="centered">
@@ -197,5 +206,20 @@
     </div>
 </div>
   
+
+  <script>
+    var bgColor = localStorage.getItem('bgColor');
+    if (bgColor) {
+      document.body.style.backgroundColor = bgColor;
+      document.getElementById("bgColor").value = bgColor;
+    }
+
+    function changeBackgroundColor() {
+      var color = document.getElementById("bgColor").value;
+      document.body.style.backgroundColor = color;
+      
+      localStorage.setItem('bgColor', color);
+    }
+  </script>
 </body>
 </html>
