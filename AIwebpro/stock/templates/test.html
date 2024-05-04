@@ -21,6 +21,9 @@
         h1 {
             text-align: center;
         }
+        h2 {
+    text-align: center;
+        }
         form {
             max-width: 400px;
             margin: 0 auto;
@@ -132,7 +135,7 @@
   <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
       <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-4">Sidebar</span>
+      <span class="fs-4">AI Stock Prediction </span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
@@ -161,8 +164,17 @@
   </div>
 
   <h1>Predict Future Price</h1>
+  
+    <form action="/" method="post">
+   
+
+      <label for="lookup_step">Enter the stock to predict:</label>
+      <input type="" id="stock_name" name="stock">
+      
+    </form>
     <form action="/" method="post">
         {% csrf_token %}
+
         <label for="lookup_step">Enter number of days to predict:</label>
         <input type="number" id="lookup_step" name="lookup_step" required>
         <button type="submit">Predict</button>
@@ -186,6 +198,21 @@
   <input type="color" id="bgColor" name="bgColor" onchange="changeBackgroundColor()">
 </form>
 
+
+<script>
+  var bgColor = localStorage.getItem('bgColor');
+  if (bgColor) {
+    document.body.style.backgroundColor = bgColor;
+    document.getElementById("bgColor").value = bgColor;
+  }
+
+  function changeBackgroundColor() {
+    var color = document.getElementById("bgColor").value;
+    document.body.style.backgroundColor = color;
+    
+    localStorage.setItem('bgColor', color);
+  }
+</script>
 
 </body>
 </html>
