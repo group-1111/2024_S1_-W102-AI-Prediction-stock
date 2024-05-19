@@ -128,6 +128,7 @@
 
   <div id="chart_div">{{ chart_div|safe }}</div>
   <script>
+
         var bgColor = localStorage.getItem('bgColor');
         if (bgColor) {
             document.body.style.backgroundColor = bgColor;
@@ -211,37 +212,55 @@
         };
   </script>
 
+
+
 <script>
+    //function to get stock information based on user input
   function getStockInfo() {
+    // Retrieve the stock code and date from input fields
     var stockCode = document.getElementById("stock_code").value;
     var date = document.getElementById("date").value;
 
+    // Log the stock code and date to the console for debugging
     console.log("Stock code:", stockCode);
     console.log("Date:", date);
 
+
+    // Make a fetch request to the server with the stock code and date as query parameters
     fetch('/get-stock-info/?stock_code=' + stockCode + '&date=' + date)
     .then(response => {
+        // Check if the response from the server is not ok
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+        // Parse the response as JSON and return.
         return response.json();
     })
     .then(data => {
+        // Log the received data to the console for debugging
         console.log("Received data:", data);
+        // Get the HTML element to display the stock information
         var stockInfoResult = document.getElementById("stockInfoResult");
+        // Clear any previous content in the result element
         stockInfoResult.innerHTML = "";
 
+        // Check if there is an error in the received data
         if (data.error) {
+            // display the error message in the result element
             stockInfoResult.textContent = data.error;
         } else {
+            // loop through the data object and create a paragraph element for each key-value pair
             for (var key in data) {
                 var p = document.createElement("p");
+                // set the text content of the paragraph to the key and value
                 p.textContent = `${key}: ${data[key]}`;
+                // append the paragraph to the result element
                 stockInfoResult.appendChild(p);
             }
         }
     })
     .catch(error => {
+        // log any errors that occured during the fetch operation
         console.error('There was a problem with the fetch operation:', error);
     });
 }

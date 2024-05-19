@@ -25,49 +25,60 @@ from .utils import predict_future_price
 
 def predict_view(request):
     if request.method == 'POST':
-        # 從表單中獲取預測天數
+        # get predict days
         lookup_step = int(request.POST['lookup_step'])
 
-        # 使用 predict_future_price 函數獲取預測結果
+        # use predict_future_price get result
         result = predict_future_price(lookup_step)
 
-        # 將結果傳遞到模板中顯示
+        # render result to test.html
         return render(request, 'test.html', {'result': result})
     else:
         return render(request, 'test.html')
 
 
 def stock_chart(request, symbol):
-    
-    stock = request.GET.get('stock', 'AAPL')  # 默认为 AAPL
+    # get the 'stock' and 'data' parameters, default to 'AAPL' and 'close' if not provide
+    stock = request.GET.get('stock', 'AAPL') 
     data = request.GET.get('data', 'close')
 
+    # fetch stock data for the given stock symbol
     stock_data = get_data(stock)
+    # Convert index of stock data to datetime format
     stock_data.index = pd.to_datetime(stock_data.index)
 
+    # create a line chart trace using Plotly with the stock data
     trace = go.Scatter(x=stock_data.index, y=stock_data[data], mode='lines', name=data)
+    # define the layout of the chart with title and axis labels
     layout = go.Layout(title=f'{stock} {data.capitalize()} Price',
                        xaxis=dict(title='Date'),
                        yaxis=dict(title='Price'))
 
+    # generate the HTML representation of the chart
     chart_div = go.Figure(data=[trace], layout=layout).to_html(full_html=False)
 
+    # render the 'API.html' template with the chart's HTML content
     return render(request, 'API.html', {'chart_div': chart_div})
 
 
 
 def get_stock_info(request):
     if request.method == 'GET':
+        # get the 'stock_code' and 'date' parameters from the GET request
         stock_code = request.GET.get('stock_code')
         date = request.GET.get('date')
         
+        # for debugging
         print(f"Stock code: {stock_code}, Date: {date}")
 
+        # fetch stock data for the given stock code and date
         stock_data = get_data(stock_code, start_date=date, end_date=date)
 
+        # for debugging
         print("Stock data:", stock_data)
 
         if not stock_data.empty:
+            # extract stock information from the fetched data
             stock_info = {
                 'open': stock_data['open'].values[0],
                 'high': stock_data['high'].values[0],
@@ -75,7 +86,9 @@ def get_stock_info(request):
                 'close': stock_data['close'].values[0],
                 'volume': stock_data['volume'].values[0],
             }
+            # return the stock information as a JSON response
             return JsonResponse(stock_info)
         else:
+            # return error if no data is available
             return JsonResponse({'error': 'No data available for the selected stock and date.'}, status=404)
         
