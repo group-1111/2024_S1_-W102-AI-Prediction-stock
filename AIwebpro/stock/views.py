@@ -6,9 +6,7 @@ import plotly.graph_objs as go
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
-
-
-
+from datetime import datetime
 
 
 # Create your views here.
@@ -37,13 +35,20 @@ def predict_view(request):
         return render(request, 'test.html')
 
 
+
 def stock_chart(request, symbol):
     # get the 'stock' and 'data' parameters, default to 'AAPL' and 'close' if not provide
     stock = request.GET.get('stock', 'AAPL') 
     data = request.GET.get('data', 'close')
 
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+
+    start_date = datetime.strptime(start_date_str, '%Y-%m-%d') if start_date_str else None
+    end_date = datetime.strptime(end_date_str, '%Y-%m-%d') if end_date_str else None
+
     # fetch stock data for the given stock symbol
-    stock_data = get_data(stock)
+    stock_data = get_data(stock, start_date=start_date, end_date=end_date)
     # Convert index of stock data to datetime format
     stock_data.index = pd.to_datetime(stock_data.index)
 
@@ -57,9 +62,10 @@ def stock_chart(request, symbol):
     # generate the HTML representation of the chart
     chart_div = go.Figure(data=[trace], layout=layout).to_html(full_html=False)
 
+   
+
     # render the 'API.html' template with the chart's HTML content
     return render(request, 'API.html', {'chart_div': chart_div})
-
 
 
 def get_stock_info(request):
@@ -92,3 +98,4 @@ def get_stock_info(request):
             # return error if no data is available
             return JsonResponse({'error': 'No data available for the selected stock and date.'}, status=404)
         
+

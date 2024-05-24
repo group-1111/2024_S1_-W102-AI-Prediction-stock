@@ -29,8 +29,7 @@
               margin-bottom: 10px;
           }
 
-          /* 右侧浮动 */
-          #addNoteButton {
+            #addNoteButton {
               position: fixed;
               right: 20px;
               bottom: 20px;
@@ -45,6 +44,7 @@
         <link href="{% static 'css/sidebars.css' %}" rel="stylesheet">
 
         <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="{% static 'js/script.js' %}"></script>
     
     
 </head>
@@ -64,7 +64,7 @@
             </a>
           </li>
           <li>
-            <a href="{% url 'stock_detail' symbol='AAPL' %}" class="nav-link text-white">
+            <a href="{% url 'stock_chart' symbol='AAPL' %}" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
               Stock
             </a>
@@ -94,127 +94,128 @@
     <button id="addNoteButton" onclick="showInput()">Add Note</button>
 
     <div class="container">
+        
         <h1>Stock Info</h1>
-
-      
-    
+        
 
         <div id="stockInfo"></div>
         <canvas id="stockChart" width="400" height="200"></canvas>
+    
+
+            <form action="" method="get">
+                <input type="text" name="stock" placeholder="Enter stock symbol or name" value="{{ stock }}">
+                <select name="data">
+                    <option value="open">Open</option>
+                    <option value="high">High</option>
+                    <option value="low">Low</option>
+                    <option value="close" selected>Close</option>
+                    <option value="volume">Volume</option>  
+                </select>
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date">
+                <input type="submit" value="Show">
+            </form>
+        <form action="" method="get" id="bgColorForm">
+            <label for="bgColor">Background Color:</label>
+            <input type="color" id="bgColor" name="bgColor" onchange="changeBackgroundColor()">
+        </form>
+
+        <form>
+            <label for="lineColor">Line Color:</label>
+            <input type="color" id="lineColor" name="lineColor" onchange="changeLineColor()">
+        </form>
+
+        <div id="chart_div">{{ chart_div|safe }}</div>
+        
     </div>
+    
+   
 
-    <form action="" method="get">
-      <input type="text" name="stock" placeholder="Enter stock symbol or name" value="{{ stock }}">
-      <select name="data">
-          <option value="open">Open</option>
-          <option value="high">High</option>
-          <option value="low">Low</option>
-          <option value="close" selected>Close</option>
-          <option value="volume">Volume</option>
-          
-          
-      </select>
-      <input type="submit" value="Show">
-  </form>
-  <form action="" method="get" id="bgColorForm">
-    <label for="bgColor">Background Color:</label>
-    <input type="color" id="bgColor" name="bgColor" onchange="changeBackgroundColor()">
-</form>
+<script>
 
-  <form>
-    <label for="lineColor">Line Color:</label>
-    <input type="color" id="lineColor" name="lineColor" onchange="changeLineColor()">
-  </form>
+    // note function
+function showInput() {
+    var noteInputArea = document.getElementById("noteInputArea");
+    noteInputArea.style.display = "block";
+}
 
-  <div id="chart_div">{{ chart_div|safe }}</div>
-  <script>
+function addNote() {
+    var noteInput = document.getElementById("noteInput");
+    var noteText = noteInput.value.trim();
 
-        var bgColor = localStorage.getItem('bgColor');
-        if (bgColor) {
-            document.body.style.backgroundColor = bgColor;
-            document.getElementById("bgColor").value = bgColor;
-        }
+    if (noteText !== "") {
+        var noteList = document.getElementById("noteList");
+        var li = document.createElement("li");
+        li.textContent = noteText;
 
-        function changeBackgroundColor() {
-            var color = document.getElementById("bgColor").value;
-            document.body.style.backgroundColor = color;
-            
-            localStorage.setItem('bgColor', color);
-        }
-
-    function changeLineColor() {
-            var color = document.getElementById("lineColor").value;
-            var chart_div = document.getElementById("chart_div");
-            var svg = chart_div.querySelector('svg');
-            var line = svg.querySelector('.js-line');
-            line.style.stroke = color;
-        }
-
-      
-  
- // note
-
- function showInput() {
-            var noteInputArea = document.getElementById("noteInputArea");
-            noteInputArea.style.display = "block";
-        }
-
-        function addNote() {
-            var noteInput = document.getElementById("noteInput");
-            var noteText = noteInput.value.trim();
-
-            if (noteText !== "") {
-                var noteList = document.getElementById("noteList");
-                var li = document.createElement("li");
-                li.textContent = noteText;
-
-                var editButton = document.createElement("button");
-                editButton.textContent = "edit";
-                editButton.onclick = function() {
-                    editNoteText(li);
-                };
-
-                var deleteButton = document.createElement("button");
-                deleteButton.textContent = "delete";
-                deleteButton.onclick = function() {
-                    li.remove();
-                };
-
-                // add edit and delete button
-                li.appendChild(editButton);
-                li.appendChild(deleteButton);
-                noteList.appendChild(li);
-
-                noteInput.value = "";
-            }
-        }
-
-        function editNoteText(noteElement) {
-            var newText = prompt("edit note", noteElement.textContent);
-            if (newText !== null) {
-                noteElement.textContent = newText;
-
-                var editButton = document.createElement("button");
-                editButton.textContent = "edit";
-                editButton.onclick = function() {
-                    editNoteText(noteElement);
-                };
-
-                noteElement.appendChild(editButton);
-                noteElement.appendChild(deleteButton);
-            }
-        }
+        var editButton = document.createElement("button");
+        editButton.textContent = "edit";
+        editButton.onclick = function() {
+            editNoteText(li);
+        };
 
         var deleteButton = document.createElement("button");
         deleteButton.textContent = "delete";
         deleteButton.onclick = function() {
-            this.parentElement.remove();
+            li.remove();
         };
-  </script>
+
+        // add edit and delete button
+        li.appendChild(editButton);
+        li.appendChild(deleteButton);
+        noteList.appendChild(li);
+
+        noteInput.value = "";
+    }
+}
+
+function editNoteText(noteElement) {
+    var newText = prompt("edit note", noteElement.textContent);
+    if (newText !== null) {
+        noteElement.textContent = newText;
+
+        var editButton = document.createElement("button");
+        editButton.textContent = "edit";
+        editButton.onclick = function() {
+            editNoteText(noteElement);
+        };
+
+        noteElement.appendChild(editButton);
+        noteElement.appendChild(deleteButton);
+    }
+}
+
+var deleteButton = document.createElement("button");
+deleteButton.textContent = "delete";
+deleteButton.onclick = function() {
+    this.parentElement.remove();
+};
+//background color and line color function
+var bgColor = localStorage.getItem('bgColor');
+if (bgColor) {
+    document.body.style.backgroundColor = bgColor;
+    document.getElementById("bgColor").value = bgColor;
+}
+
+function changeBackgroundColor() {
+    var color = document.getElementById("bgColor").value;
+    document.body.style.backgroundColor = color;
+    
+    localStorage.setItem('bgColor', color);
+}
+
+function changeLineColor() {
+    var color = document.getElementById("lineColor").value;
+    var chart_div = document.getElementById("chart_div");
+    var svg = chart_div.querySelector('svg');
+    var line = svg.querySelector('.js-line');
+    line.style.stroke = color;
+}
 
 
 
-<script>
     //function to get stock information based on user input
   function getStockInfo() {
     // Retrieve the stock code and date from input fields

@@ -1,3 +1,4 @@
+// drag function
 document.addEventListener('DOMContentLoaded', () => {
     const draggables = document.querySelectorAll('.draggable');
     const container = document.querySelector('.container');
@@ -71,3 +72,83 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadLayout();
 });
+
+// note function
+function showInput() {
+    var noteInputArea = document.getElementById("noteInputArea");
+    noteInputArea.style.display = "block";
+}
+
+function addNote() {
+    var noteInput = document.getElementById("noteInput");
+    var noteText = noteInput.value.trim();
+
+    if (noteText !== "") {
+        var noteList = document.getElementById("noteList");
+        var li = document.createElement("li");
+        li.textContent = noteText;
+
+        var editButton = document.createElement("button");
+        editButton.textContent = "edit";
+        editButton.onclick = function() {
+            editNoteText(li);
+        };
+
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "delete";
+        deleteButton.onclick = function() {
+            li.remove();
+        };
+
+        // add edit and delete button
+        li.appendChild(editButton);
+        li.appendChild(deleteButton);
+        noteList.appendChild(li);
+
+        noteInput.value = "";
+    }
+}
+
+function editNoteText(noteElement) {
+    var newText = prompt("edit note", noteElement.textContent);
+    if (newText !== null) {
+        noteElement.textContent = newText;
+
+        var editButton = document.createElement("button");
+        editButton.textContent = "edit";
+        editButton.onclick = function() {
+            editNoteText(noteElement);
+        };
+
+        noteElement.appendChild(editButton);
+        noteElement.appendChild(deleteButton);
+    }
+}
+
+var deleteButton = document.createElement("button");
+deleteButton.textContent = "delete";
+deleteButton.onclick = function() {
+    this.parentElement.remove();
+};
+//background color and line color function
+var bgColor = localStorage.getItem('bgColor');
+if (bgColor) {
+    document.body.style.backgroundColor = bgColor;
+    document.getElementById("bgColor").value = bgColor;
+}
+
+function changeBackgroundColor() {
+    var color = document.getElementById("bgColor").value;
+    document.body.style.backgroundColor = color;
+    
+    localStorage.setItem('bgColor', color);
+}
+
+function changeLineColor() {
+    var color = document.getElementById("lineColor").value;
+    var chart_div = document.getElementById("chart_div");
+    var svg = chart_div.querySelector('svg');
+    var line = svg.querySelector('.js-line');
+    line.style.stroke = color;
+}
+
