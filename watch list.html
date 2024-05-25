@@ -30,6 +30,11 @@
             list-style-type: none;
             padding: 0;
         }
+
+        .categorylist {
+            list-style-type: none;
+            padding: 0;
+        }
         .watchlist li {
             display: flex;
             justify-content: space-between;
@@ -48,6 +53,11 @@
         </div>
         <ul id="watchlist" class="watchlist"></ul>
     </div>
+
+    <div>
+        <h3>Category Data List</h3>
+        <ul id="categorylist" class="categorylist"></ul>
+    </div>
     <script>
         // Function to add a stock to the watchlist
         function addStock() {
@@ -62,10 +72,84 @@
                     watchlist.removeChild(listItem);
                 };
                 listItem.appendChild(removeButton);
+
+                 const addCateButton = document.createElement('button');
+                addCateButton.textContent = 'Add To Category';
+                addCateButton.onclick = function() {
+                    const categoryName = prompt("please enter categoryName:", "");
+                    addCategory(categoryName,stockSymbol);
+
+                 };
+                 listItem.appendChild(addCateButton);
+
+                const setPriceButton = document.createElement('button');
+                setPriceButton.textContent = 'Set My Target Price';
+                setPriceButton.onclick = function() {
+                    const price = prompt("please enter your price:", "");
+                    setPrice(price,stockSymbol);
+
+                };
+                listItem.appendChild(setPriceButton);
+
+
+                const setCurrentPriceButton = document.createElement('button');
+                setCurrentPriceButton.textContent = 'Set Current Price';
+                setCurrentPriceButton.onclick = function() {
+                    const price = prompt("please enter now stock price:", "");
+                    setCurrentPrice(price,stockSymbol);
+
+                };
+                listItem.appendChild(setCurrentPriceButton);
+
                 watchlist.appendChild(listItem);
                 document.getElementById('stockSymbol').value = '';
             } else {
                 alert('Please enter a stock symbol.');
+            }
+        }
+
+
+        let globalCategory = {};
+        let categoryNames = [];
+        function addCategory(categoryName,stockSymbol ) {
+
+            let data = globalCategory[categoryName] || [];
+            data.push(stockSymbol);
+            globalCategory[categoryName] = data;
+
+            if (!categoryNames.includes(categoryName)){
+                categoryNames.push(categoryName);
+            }
+            //div
+            const categorylist = document.getElementById('categorylist');
+            categorylist.innerHTML = '';
+            categoryNames.forEach((categoryName) => {
+                const category = document.createElement('p');
+                category.textContent= 'categoryName:'+categoryName;
+                categorylist.appendChild(category);
+
+                const listItem = document.createElement('li');
+                listItem.textContent = 'stockCodes:'+globalCategory[categoryName];
+                categorylist.appendChild(listItem);
+
+            });
+        }
+
+
+        let globalPrice = {};
+
+        function setPrice(price , stockSymbol){
+            globalPrice[stockSymbol] = price;
+            console.log(globalPrice);
+
+        }
+
+        function setCurrentPrice(price , stockSymbol){
+            let targetPrice = globalPrice[stockSymbol];
+            if (targetPrice) {
+                if (price === targetPrice) {
+                    alert('Notice: Target Price Reached');
+                }
             }
         }
     </script>
