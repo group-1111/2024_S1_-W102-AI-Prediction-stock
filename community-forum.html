@@ -7,42 +7,47 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
         }
         .container {
             width: 80%;
-            margin: 0 auto;
+            margin: 20px auto;
             padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
         .forum-header {
-            background: #007BFF;
+            background: #0056b3;
             color: white;
-            padding: 10px;
+            padding: 10px 20px;
             border-radius: 5px;
-            text-align: center;
+            margin-bottom: 20px;
         }
         .forum-categories {
-            margin-top: 20px;
+            margin-top: 10px;
         }
-        .category {
-            background: #f2f2f2;
+        .category, .post {
+            background: #e9e9e9;
             border: 1px solid #ccc;
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
         }
-        .post {
-            margin-top: 5px;
-            background: #e9e9e9;
-            padding: 8px;
-            border-radius: 3px;
-        }
-        .add-post {
+        .add-post, .reply-btn, .create-thread {
             background: lightgreen;
             border: none;
-            padding: 10px 20px;
-            margin: 10px 0;
+            padding: 8px 16px;
+            margin-top: 10px;
             border-radius: 5px;
             cursor: pointer;
+        }
+        .reply-btn {
+            background: lightblue;
+        }
+        .hidden {
+            display: none;
         }
     </style>
 </head>
@@ -52,23 +57,91 @@
             <h1>AI Stock Prediction Community Forum</h1>
         </div>
         <div class="forum-categories">
-            <div class="category">
-                <h2>Prediction Strategies</h2>
-                <div class="post">User1: What's the best strategy for short-term gains?</div>
-                <div class="post">User2: I prefer using moving averages for a quick analysis.</div>
-                <button class="add-post">Add Post</button>
-            </div>
-            <div class="category">
-                <h2>Stock Analysis</h2>
-                <div class="post">User3: Has anyone analyzed the recent dip in XYZ stock?</div>
-                <button class="add-post">Add Post</button>
-            </div>
-            <div class="category">
-                <h2>Market Trends</h2>
-                <div class="post">User4: How do you think the upcoming elections will affect the market?</div>
-                <button class="add-post">Add Post</button>
-            </div>
+            <!-- Dynamically populated -->
+        </div>
+        <button class="add-post" onclick="showNewThreadBox()">Create New Thread</button>
+        <div class="new-thread hidden">
+            <input type="text" id="threadTitle" placeholder="Thread Title" />
+            <textarea id="threadContent" placeholder="Write your discussion content here..." rows="4"></textarea>
+            <button onclick="createNewThread()">Create Thread</button>
         </div>
     </div>
+
+    <script>
+        const forumCategories = [
+            { id: 1, name: 'Prediction Strategies', posts: [] },
+            { id: 2, name: 'Stock Analysis', posts: [] },
+            { id: 3, name: 'Market Trends', posts: [] }
+        ];
+
+        const categoriesContainer = document.querySelector('.forum-categories');
+        updateCategories();
+
+        function updateCategories() {
+            categoriesContainer.innerHTML = ''; // Clear existing categories
+            forumCategories.forEach((category, index) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `<h2>${category.name}</h2>`;
+                category.posts.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'post';
+                    postDiv.textContent = `${post.userId}: ${post.text}`;
+                    categoryDiv.appendChild(postDiv);
+                });
+                const replyBtn = document.createElement('button');
+                replyBtn.className = 'reply-btn';
+                replyBtn.textContent = 'Reply';
+                replyBtn.onclick = function() { showReplyBox(index); };
+                categoryDiv.appendChild(replyBtn);
+
+                const replyBox = document.createElement('div');
+                replyBox.className = 'posts hidden';
+                replyBox.innerHTML = `<input type='text' placeholder='Write a reply...' /><button onclick='postReply(${index})'>Post</button>`;
+                categoryDiv.appendChild(replyBox);
+
+                categoriesContainer.appendChild(categoryDiv);
+            });
+        }
+
+        function showNewThreadBox() {
+            document.querySelector('.new-thread').classList.remove('hidden');
+        }
+
+        function createNewThread() {
+            const title = document.getElementById('threadTitle').value;
+            const content = document.getElementById('threadContent').value;
+            const newCategory = {
+                id: forumCategories.length + 1,
+                name: title,
+                posts: [{ userId: 'You', text: content }]
+            };
+            forumCategories.push(newCategory);
+            updateCategories(); // Update the DOM
+            document.getElementById('threadTitle').value = '';
+            document.getElementById('threadContent').value = '';
+            document.querySelector('.new-thread').classList.add('hidden');
+        }
+
+        function showReplyBox(index) {
+            const categoryDiv = categoriesContainer.children[index];
+            const replyBox = categoryDiv.querySelector('.posts');
+            replyBox.classList.toggle('hidden');
+        }
+
+        function postReply(index) {
+            const categoryDiv = categoriesContainer.children[index];
+            const input = categoryDiv.querySelector('input');
+            const newPost = { userId: 'You', text: input.value };
+            forumCategories[index].posts.push(newPost);
+            updateCategories(); // Update the DOM
+            input.value = ''; // Clear input field after posting
+        }
+    </script>
 </body>
 </html>
+
+
+
+
+
