@@ -1,0 +1,29 @@
+
+body {
+    font-family: Arial, sans-serif;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+#recommended-stocks {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+}
+
+.stock-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.stock-item:hover {
+    background-color: #e9ecef;
+}
