@@ -16,15 +16,15 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
-  <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px;">
+  <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: max-content;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
       <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
-      <span class="fs-4">AI Stock Prediction </span>
+      <span class="fs-4">Sidebar</span>
     </a>
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
       <li class="nav-item">
-        <a href="{% url 'predict_view' %}" class="nav-link active" aria-current="page">
+        <a href="{% url 'first_page' %}" class="nav-link active" aria-current="page">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
           Home
         </a>
@@ -39,6 +39,24 @@
         <a href="{% url 'prediction_pic' %}" class="nav-link text-white">
           <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
           Prediction Stock Pic
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'recommend_page' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Daily Recommend
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'watch_list' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          My Watchlist
+        </a>
+      </li>
+      <li>
+        <a href="{% url 'community_page' %}" class="nav-link text-white">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+          Community
         </a>
       </li>
       

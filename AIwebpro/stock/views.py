@@ -70,21 +70,21 @@ def stock_chart(request, symbol):
 
 def get_stock_info(request):
     if request.method == 'GET':
-        # get the 'stock_code' and 'date' parameters from the GET request
+        # Get the 'stock_code' and 'date' parameters from the GET request
         stock_code = request.GET.get('stock_code')
         date = request.GET.get('date')
         
-        # for debugging
+        # For debugging
         print(f"Stock code: {stock_code}, Date: {date}")
 
-        # fetch stock data for the given stock code and date
+        # Fetch stock data for the given stock code and date
         stock_data = get_data(stock_code, start_date=date, end_date=date)
 
-        # for debugging
+        # For debugging
         print("Stock data:", stock_data)
 
         if not stock_data.empty:
-            # extract stock information from the fetched data
+            # Extract stock information from the fetched data
             stock_info = {
                 'open': stock_data['open'].values[0],
                 'high': stock_data['high'].values[0],
@@ -92,10 +92,18 @@ def get_stock_info(request):
                 'close': stock_data['close'].values[0],
                 'volume': stock_data['volume'].values[0],
             }
-            # return the stock information as a JSON response
+            # Return the stock information as a JSON response
             return JsonResponse(stock_info)
         else:
-            # return error if no data is available
+            # Return error if no data is available
             return JsonResponse({'error': 'No data available for the selected stock and date.'}, status=404)
         
 
+def recommend_page(request):
+    return render(request, 'Stock_recommended.html')
+
+def community_page(request):
+    return render(request, 'community-forum.html')
+
+def watch_list(request):
+    return render(request, 'watch_list.html')

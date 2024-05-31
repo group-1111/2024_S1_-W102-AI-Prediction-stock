@@ -8,5 +8,7 @@ urlpatterns = [
     path('prediction_pic/', views.prediction_pic, name='prediction_pic'),
     path('<str:symbol>/', views.stock_chart, name='stock_chart'),
     path('get-stock-info/', views.get_stock_info, name='get_stock_info'),
-    
+    path('recommend/', views.recommend_page, name='recommend_page'),
+    path('community/', views.community_page, name='community_page'),
+    path('watch_list/', views.watch_list, name='watch_list'),
 ]

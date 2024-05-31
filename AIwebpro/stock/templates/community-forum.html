@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Forum</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .forum-header {
+            background: #0056b3;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .forum-categories {
+            margin-top: 10px;
+        }
+        .category, .post {
+            background: #e9e9e9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .add-post, .reply-btn, .create-thread {
+            background: lightgreen;
+            border: none;
+            padding: 8px 16px;
+            margin-top: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .reply-btn {
+            background: lightblue;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/sidebars/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/newtest.css' %}" rel="stylesheet">
+    <link href="{% static 'css/sidebars.css' %}" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
+</head>
+<body>
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: max-content;">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+          <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+          <span class="fs-4">Sidebar</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+          <li class="nav-item">
+            <a href="{% url 'first_page' %}" class="nav-link active" aria-current="page">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+              Home
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'stock_chart' symbol='AAPL' %}" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+              Stock
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'prediction_pic' %}" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+              Prediction Stock Pic
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'recommend_page' %}" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+              Daily Recommend
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'watch_list' %}" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+              My Watchlist
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'community_page' %}" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+              Community
+            </a>
+          </li>
+          
+        </ul>
+    
+        
+      </div>
+
+
+
+    <div class="container">
+        <div class="forum-header">
+            <h1>AI Stock Prediction Community Forum</h1>
+        </div>
+        <div class="forum-categories">
+            <!-- Dynamically populated -->
+        </div>
+        <button class="add-post" onclick="showNewThreadBox()">Create New Thread</button>
+        <div class="new-thread hidden">
+            <input type="text" id="threadTitle" placeholder="Thread Title" />
+            <textarea id="threadContent" placeholder="Write your discussion content here..." rows="4"></textarea>
+            <button onclick="createNewThread()">Create Thread</button>
+        </div>
+    </div>
+
+    <script>
+        const forumCategories = [
+            { id: 1, name: 'Prediction Strategies', posts: [] },
+            { id: 2, name: 'Stock Analysis', posts: [] },
+            { id: 3, name: 'Market Trends', posts: [] }
+        ];
+
+        const categoriesContainer = document.querySelector('.forum-categories');
+        updateCategories();
+
+        function updateCategories() {
+            categoriesContainer.innerHTML = ''; // Clear existing categories
+            forumCategories.forEach((category, index) => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                categoryDiv.innerHTML = `<h2>${category.name}</h2>`;
+                category.posts.forEach(post => {
+                    const postDiv = document.createElement('div');
+                    postDiv.className = 'post';
+                    postDiv.textContent = `${post.userId}: ${post.text}`;
+                    categoryDiv.appendChild(postDiv);
+                });
+                const replyBtn = document.createElement('button');
+                replyBtn.className = 'reply-btn';
+                replyBtn.textContent = 'Reply';
+                replyBtn.onclick = function() { showReplyBox(index); };
+                categoryDiv.appendChild(replyBtn);
+
+                const replyBox = document.createElement('div');
+                replyBox.className = 'posts hidden';
+                replyBox.innerHTML = `<input type='text' placeholder='Write a reply...' /><button onclick='postReply(${index})'>Post</button>`;
+                categoryDiv.appendChild(replyBox);
+
+                categoriesContainer.appendChild(categoryDiv);
+            });
+        }
+
+        function showNewThreadBox() {
+            document.querySelector('.new-thread').classList.remove('hidden');
+        }
+
+        function createNewThread() {
+            const title = document.getElementById('threadTitle').value;
+            const content = document.getElementById('threadContent').value;
+            const newCategory = {
+                id: forumCategories.length + 1,
+                name: title,
+                posts: [{ userId: 'You', text: content }]
+            };
+            forumCategories.push(newCategory);
+            updateCategories(); // Update the DOM
+            document.getElementById('threadTitle').value = '';
+            document.getElementById('threadContent').value = '';
+            document.querySelector('.new-thread').classList.add('hidden');
+        }
+
+        function showReplyBox(index) {
+            const categoryDiv = categoriesContainer.children[index];
+            const replyBox = categoryDiv.querySelector('.posts');
+            replyBox.classList.toggle('hidden');
+        }
+
+        function postReply(index) {
+            const categoryDiv = categoriesContainer.children[index];
+            const input = categoryDiv.querySelector('input');
+            const newPost = { userId: 'You', text: input.value };
+            forumCategories[index].posts.push(newPost);
+            updateCategories(); // Update the DOM
+            input.value = ''; // Clear input field after posting
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
