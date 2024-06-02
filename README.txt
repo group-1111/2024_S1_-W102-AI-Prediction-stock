@@ -87,7 +87,9 @@ def plot_prices():
     canvas.draw()
     canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 ```
-###Watch list 
+### Watch List
+
+```python
  function addStock() {
             const stockSymbol = document.getElementById('stockSymbol').value.trim().toUpperCase();
             if (stockSymbol) {
@@ -96,7 +98,10 @@ def plot_prices():
                 listItem.textContent = stockSymbol;
                 listItem.classList.add('highlight');
 
-###Set Django environment
+```
+### Django environment
+
+```python
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
 import os
@@ -119,6 +124,7 @@ def main():
 
 if __name__ == '__main__':
     main()
+```
 ### Using Google Colab and Django
 
 Due to the need to run the project on Google Colab for convenient data processing and model training, integrating it with Django has been somewhat challenging for us. However, YungHsiang has put in a tremendous amount of effort to help us tackle this issue
@@ -130,3 +136,4 @@ Pull requests are welcome. For major changes, please open an issue first to disc
 ## License
 
  [MIT](https://github.com/twbs/bootstrap/blob/main/LICENSE)
+
