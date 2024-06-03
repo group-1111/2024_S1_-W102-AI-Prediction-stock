@@ -109,5 +109,24 @@
         </section>
     </main>
     <script src="script.js"></script>
+
+    <form action="" method="get" id="bgColorForm">
+      <label for="bgColor">Background Color:</label>
+      <input type="color" id="bgColor" name="bgColor" onchange="changeBackgroundColor()">
+    </form>
+    <script>
+      var bgColor = localStorage.getItem('bgColor');
+      if (bgColor) {
+        document.body.style.backgroundColor = bgColor;
+        document.getElementById("bgColor").value = bgColor;
+      }
+  
+      function changeBackgroundColor() {
+        var color = document.getElementById("bgColor").value;
+        document.body.style.backgroundColor = color;
+        
+        localStorage.setItem('bgColor', color);
+      }
+    </script>
 </body>
 </html>

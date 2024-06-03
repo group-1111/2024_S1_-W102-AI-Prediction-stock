@@ -16,8 +16,7 @@ def first_page(request):
 
 
 
-def prediction_pic(request):
-    return render(request, 'index.html')   
+   
 
 from .utils import predict_future_price
 
@@ -98,6 +97,8 @@ def get_stock_info(request):
             # Return error if no data is available
             return JsonResponse({'error': 'No data available for the selected stock and date.'}, status=404)
         
+def prediction_pic(request):
+    return render(request, 'index.html')        
 
 def recommend_page(request):
     return render(request, 'Stock_recommended.html')

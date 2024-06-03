@@ -14,8 +14,12 @@
     <link href="{% static 'css/newtest.css' %}" rel="stylesheet">
     <link href="{% static 'css/sidebars.css' %}" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    
 </head>
 <body>
+  
+  
+  <!-- sidebar --> 
   <div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: max-content;">
     <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
       <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
@@ -65,21 +69,22 @@
     
   </div>
 
-  <button id="toggle-button">Enable Drag and Drop</button>
-  <h1>Predict Future Price</h1>
+  <button id="toggle-button" >Enable Drag and Drop</button>
+  <h1 style="margin-top: -50px;">Predict Future Price</h1>
   
-  <div>
+  <div id="main">
 
-  
-    <form action="/" method="post">
+    <div class="draggable" draggable="false" style="position:absolute; top: 500px;left: 200px;">
+      <form action="/" method="post">
    
 
       <label for="lookup_step">Enter the stock to predict:</label>
       <input type="" id="stock_name" name="stock">
       
-    </form>
+    </form></div>
+    
 
-    <div class="draggable" draggable="true">
+    <div class="draggable" draggable="true"style="position:absolute; top: 500px;left: 500px;">
       <form action="/" method="post">
           {% csrf_token %}
 
@@ -89,7 +94,7 @@
       </form>
 
     </div>
-    <div class="draggable" draggable="true">
+    <div class="draggable" draggable="true" style="width: auto; height: auto; position:absolute; top: 500px;left: 1000px;">
         {% if result %}
       <h2>Result</h2>
       <p>Future price after {{ result.lookup_step }} days is ${{ result.future_price }}</p>
@@ -112,8 +117,8 @@
 </form>
 
 </div>
-
 <script src="{% static 'js/script.js' %}"></script>
+
 
 <script>
   //backgroundcolor
