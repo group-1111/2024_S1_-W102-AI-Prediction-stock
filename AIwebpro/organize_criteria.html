@@ -82,6 +82,25 @@
                  };
                  listItem.appendChild(addCateButton);
 
+                const setPriceButton = document.createElement('button');
+                setPriceButton.textContent = 'Set My Target Price';
+                setPriceButton.onclick = function() {
+                    const price = prompt("please enter your price:", "");
+                    setPrice(price,stockSymbol);
+
+                };
+                listItem.appendChild(setPriceButton);
+
+
+                const setCurrentPriceButton = document.createElement('button');
+                setCurrentPriceButton.textContent = 'Set Current Price';
+                setCurrentPriceButton.onclick = function() {
+                    const price = prompt("please enter now stock price:", "");
+                    setCurrentPrice(price,stockSymbol);
+
+                };
+                listItem.appendChild(setCurrentPriceButton);
+
                 watchlist.appendChild(listItem);
                 document.getElementById('stockSymbol').value = '';
             } else {
@@ -93,6 +112,9 @@
         let globalCategory = {};
         let categoryNames = [];
         function addCategory(categoryName,stockSymbol ) {
+            if (!categoryName){
+                alert('Please enter a categoryName.');
+            }
 
             let data = globalCategory[categoryName] || [];
             data.push(stockSymbol);
@@ -114,6 +136,24 @@
                 categorylist.appendChild(listItem);
 
             });
+        }
+
+
+        let globalPrice = {};
+
+        function setPrice(price , stockSymbol){
+            globalPrice[stockSymbol] = price;
+            console.log(globalPrice);
+
+        }
+
+        function setCurrentPrice(price , stockSymbol){
+            let targetPrice = globalPrice[stockSymbol];
+            if (targetPrice) {
+                if (price === targetPrice) {
+                    alert('Notice: Target Price Reached');
+                }
+            }
         }
     </script>
 </body>
